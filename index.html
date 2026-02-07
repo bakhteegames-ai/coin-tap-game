@@ -5,24 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Coin Tap - Earn Coins!</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getDatabase, ref, set, get, update, onValue, query, orderByChild, limitToLast } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyCyYje3EovA6T58XTffA1VwOQGQxBfnL3E",
-            authDomain: "coin-tap-game.firebaseapp.com",
-            databaseURL: "https://coin-tap-game-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "coin-tap-game",
-            storageBucket: "coin-tap-game.firebasestorage.app",
-            messagingSenderId: "1069432237895",
-            appId: "1:1069432237895:web:9d0c4a24134ae069b7e662"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
-        window.db = database;
-    </script>
     <style>
         * {
             margin: 0;
@@ -30,227 +12,124 @@
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
         }
-        
+
         body {
             font-family: 'Arial', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
             color: white;
-            overflow-x: hidden;
         }
-        
+
         .container {
             width: 100%;
             max-width: 500px;
-            margin: 0 auto;
             padding: 20px;
+            text-align: center;
         }
 
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            background: rgba(255,255,255,0.1);
-            padding: 10px;
-            border-radius: 15px;
-        }
-
-        .tab {
-            flex: 1;
-            padding: 10px;
-            background: rgba(255,255,255,0.1);
-            border: none;
-            border-radius: 10px;
-            color: white;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .tab.active {
-            background: rgba(255,255,255,0.3);
-            transform: scale(1.05);
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-        
         .header {
-            text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
-        
-        .header h1 {
-            font-size: 32px;
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
-        .user-info {
-            background: rgba(255,255,255,0.2);
-            backdrop-filter: blur(10px);
-            padding: 15px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .user-name {
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .user-rank {
-            font-size: 14px;
-            opacity: 0.9;
-        }
-        
         .coin-display {
-            background: rgba(255,255,255,0.2);
-            backdrop-filter: blur(10px);
-            padding: 20px;
-            border-radius: 20px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        
-        .coin-count {
-            font-size: 48px;
+            font-size: 3em;
             font-weight: bold;
+            margin: 20px 0;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
-        
-        .coin-label {
-            font-size: 18px;
-            opacity: 0.9;
-            margin-top: 5px;
-        }
-        
-        .tap-button {
+
+        .coin-button {
             width: 200px;
             height: 200px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-            border: 5px solid rgba(255,255,255,0.5);
-            font-size: 64px;
+            background: linear-gradient(145deg, #ffd700, #ffed4e);
+            border: none;
+            font-size: 4em;
             cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             transition: transform 0.1s;
-            margin: 0 auto 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-            user-select: none;
-        }
-        
-        .tap-button:active {
-            transform: scale(0.95);
-        }
-        
-        .stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        
-        .stat-item {
-            background: rgba(255,255,255,0.2);
-            backdrop-filter: blur(10px);
-            padding: 15px;
-            border-radius: 15px;
-            text-align: center;
-        }
-        
-        .stat-value {
-            font-size: 24px;
-            font-weight: bold;
-        }
-        
-        .stat-label {
-            font-size: 14px;
-            opacity: 0.9;
-            margin-top: 5px;
-        }
-        
-        .upgrade-section {
-            background: rgba(255,255,255,0.2);
-            backdrop-filter: blur(10px);
-            padding: 20px;
-            border-radius: 20px;
-            margin-top: 20px;
+            margin: 20px auto;
+            display: block;
         }
 
-        .upgrade-section h3 {
-            text-align: center;
-            margin-bottom: 15px;
+        .coin-button:active {
+            transform: scale(0.95);
         }
-        
-        .upgrade-button {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
-            color: white;
-            border: none;
+
+        .stats {
+            margin-top: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .stat-box {
+            background: rgba(255,255,255,0.1);
             padding: 15px;
-            border-radius: 15px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            margin: 10px 0;
-            width: 100%;
-            transition: transform 0.2s;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
         }
-        
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .upgrades {
+            margin-top: 30px;
+        }
+
+        .upgrade-button {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            width: 100%;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+        }
+
         .upgrade-button:hover:not(:disabled) {
+            background: rgba(255,255,255,0.3);
             transform: translateY(-2px);
         }
-        
+
         .upgrade-button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
 
-        .upgrade-info {
-            text-align: left;
-        }
-
-        .upgrade-name {
-            font-size: 16px;
-            margin-bottom: 5px;
-        }
-
-        .upgrade-cost {
-            font-size: 12px;
-            opacity: 0.9;
-        }
-
-        .upgrade-level {
-            background: rgba(255,255,255,0.3);
-            padding: 5px 10px;
-            border-radius: 10px;
-            font-size: 12px;
-        }
-        
-        .floating-text {
-            position: fixed;
-            font-size: 24px;
+        .click-animation {
+            position: absolute;
+            color: #ffd700;
+            font-size: 2em;
             font-weight: bold;
             pointer-events: none;
-            animation: float-up 1s ease-out forwards;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-            z-index: 1000;
+            animation: floatUp 1s ease-out;
         }
-        
-        @keyframes float-up {
+
+        @keyframes floatUp {
             0% {
                 opacity: 1;
                 transform: translateY(0);
@@ -260,207 +139,157 @@
                 transform: translateY(-100px);
             }
         }
-
-        .leaderboard {
-            background: rgba(255,255,255,0.2);
-            backdrop-filter: blur(10px);
-            padding: 20px;
-            border-radius: 20px;
-        }
-
-        .leaderboard h3 {
-            text-align: center;
-            margin-bottom: 15px;
-        }
-
-        .leaderboard-item {
-            background: rgba(255,255,255,0.1);
-            padding: 12px;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .leaderboard-rank {
-            font-size: 20px;
-            font-weight: bold;
-            width: 30px;
-        }
-
-        .leaderboard-name {
-            flex: 1;
-            margin-left: 15px;
-        }
-
-        .leaderboard-coins {
-            font-weight: bold;
-            color: #ffd700;
-        }
-
-        .daily-reward {
-            background: rgba(255,255,255,0.2);
-            backdrop-filter: blur(10px);
-            padding: 20px;
-            border-radius: 20px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .daily-reward-button {
-            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 15px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        .daily-reward-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .referral-section {
-            background: rgba(255,255,255,0.2);
-            backdrop-filter: blur(10px);
-            padding: 20px;
-            border-radius: 20px;
-            text-align: center;
-        }
-
-        .referral-code {
-            background: rgba(255,255,255,0.3);
-            padding: 15px;
-            border-radius: 10px;
-            font-size: 20px;
-            font-weight: bold;
-            margin: 15px 0;
-            word-break: break-all;
-        }
-
-        .referral-button {
-            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 15px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        .achievements {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .achievement {
-            background: rgba(255,255,255,0.2);
-            padding: 15px;
-            border-radius: 15px;
-            text-align: center;
-        }
-
-        .achievement.unlocked {
-            background: rgba(76, 175, 80, 0.3);
-        }
-
-        .achievement-icon {
-            font-size: 32px;
-            margin-bottom: 10px;
-        }
-
-        .achievement-name {
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-        .achievement-desc {
-            font-size: 11px;
-            opacity: 0.8;
-            margin-top: 5px;
-        }
-        
-        .info-text {
-            font-size: 14px;
-            opacity: 0.8;
-            margin-top: 10px;
-            text-align: center;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 50px;
-            font-size: 18px;
-        }
     </style>
 </head>
 <body>
-    <div id="loading" class="loading">
-        <div>⏳ Loading...</div>
+    <div class="container">
+        <div class="header">
+            <h1>💰 Coin Tap</h1>
+            <div class="coin-display" id="coinDisplay">0</div>
+        </div>
+
+        <button class="coin-button" id="coinButton">🪙</button>
+
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-label">Coins per Tap</div>
+                <div class="stat-value" id="perTap">1</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Total Taps</div>
+                <div class="stat-value" id="totalTaps">0</div>
+            </div>
+        </div>
+
+        <div class="upgrades">
+            <button class="upgrade-button" id="upgrade1">
+                🚀 Double Tap Power<br>
+                <small>Cost: <span id="cost1">10</span> coins</small>
+            </button>
+            <button class="upgrade-button" id="upgrade2">
+                ⚡ Triple Tap Power<br>
+                <small>Cost: <span id="cost2">50</span> coins</small>
+            </button>
+            <button class="upgrade-button" id="upgrade3">
+                💎 5x Tap Power<br>
+                <small>Cost: <span id="cost3">200</span> coins</small>
+            </button>
+        </div>
     </div>
 
-    <div id="app" style="display: none;">
-        <div class="container">
-            <div class="header">
-                <h1>💰 Coin Tap</h1>
-            </div>
+    <script>
+        // Initialize Telegram WebApp
+        let tg = window.Telegram.WebApp;
+        tg.expand();
 
-            <div class="user-info">
-                <div>
-                    <div class="user-name" id="userName">Player</div>
-                    <div class="user-rank" id="userRank">Rank: -</div>
-                </div>
-                <div>
-                    <div class="stat-label">Referrals</div>
-                    <div class="stat-value" id="referralCount">0</div>
-                </div>
-            </div>
+        // Game state
+        let coins = parseInt(localStorage.getItem('coins')) || 0;
+        let coinsPerTap = parseInt(localStorage.getItem('coinsPerTap')) || 1;
+        let totalTaps = parseInt(localStorage.getItem('totalTaps')) || 0;
+        let upgradeCosts = {
+            upgrade1: 10,
+            upgrade2: 50,
+            upgrade3: 200
+        };
 
-            <div class="tabs">
-                <button class="tab active" onclick="switchTab('game')">🎮 Game</button>
-                <button class="tab" onclick="switchTab('leaderboard')">🏆 Top</button>
-                <button class="tab" onclick="switchTab('upgrades')">⬆️ Upgrades</button>
-                <button class="tab" onclick="switchTab('rewards')">🎁 Rewards</button>
-            </div>
+        // Elements
+        const coinDisplay = document.getElementById('coinDisplay');
+        const coinButton = document.getElementById('coinButton');
+        const perTapDisplay = document.getElementById('perTap');
+        const totalTapsDisplay = document.getElementById('totalTaps');
 
-            <div id="game-tab" class="tab-content active">
-                <div class="coin-display">
-                    <div class="coin-count" id="coinCount">0</div>
-                    <div class="coin-label">Total Coins</div>
-                </div>
+        // Update display
+        function updateDisplay() {
+            coinDisplay.textContent = coins;
+            perTapDisplay.textContent = coinsPerTap;
+            totalTapsDisplay.textContent = totalTaps;
+            
+            // Save to localStorage
+            localStorage.setItem('coins', coins);
+            localStorage.setItem('coinsPerTap', coinsPerTap);
+            localStorage.setItem('totalTaps', totalTaps);
+            
+            // Update upgrade buttons
+            updateUpgradeButtons();
+        }
+
+        // Update upgrade button states
+        function updateUpgradeButtons() {
+            document.getElementById('upgrade1').disabled = coins < upgradeCosts.upgrade1;
+            document.getElementById('upgrade2').disabled = coins < upgradeCosts.upgrade2;
+            document.getElementById('upgrade3').disabled = coins < upgradeCosts.upgrade3;
+        }
+
+        // Coin tap handler
+        coinButton.addEventListener('click', function(e) {
+            coins += coinsPerTap;
+            totalTaps++;
+            
+            // Create floating animation
+            const animation = document.createElement('div');
+            animation.className = 'click-animation';
+            animation.textContent = '+' + coinsPerTap;
+            animation.style.left = e.pageX + 'px';
+            animation.style.top = e.pageY + 'px';
+            document.body.appendChild(animation);
+            
+            setTimeout(() => animation.remove(), 1000);
+            
+            updateDisplay();
+            
+            // Haptic feedback
+            if (tg.HapticFeedback) {
+                tg.HapticFeedback.impactOccurred('light');
+            }
+        });
+
+        // Upgrade 1: Double tap power
+        document.getElementById('upgrade1').addEventListener('click', function() {
+            if (coins >= upgradeCosts.upgrade1) {
+                coins -= upgradeCosts.upgrade1;
+                coinsPerTap *= 2;
+                upgradeCosts.upgrade1 = Math.floor(upgradeCosts.upgrade1 * 2.5);
+                document.getElementById('cost1').textContent = upgradeCosts.upgrade1;
+                updateDisplay();
                 
-                <div class="tap-button" id="tapButton">
-                    🪙
-                </div>
-                
-                <div class="stats">
-                    <div class="stat-item">
-                        <div class="stat-value" id="perTap">1</div>
-                        <div class="stat-label">Per Tap</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="totalTaps">0</div>
-                        <div class="stat-label">Total Taps</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="perSecond">0</div>
-                        <div class="stat-label">Per Second</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="achievementCount">0/10</div>
-                        <div class="stat-label">Achievements</div>
-                    </div>
-                </div>
-            </div>
+                if (tg.HapticFeedback) {
+                    tg.HapticFeedback.notificationOccurred('success');
+                }
+            }
+        });
 
-            <div id="leaderboard-tab" class="tab-content">
-                <div class="leaderboard">
-                    <h3>🏆
+        // Upgrade 2: Triple tap power
+        document.getElementById('upgrade2').addEventListener('click', function() {
+            if (coins >= upgradeCosts.upgrade2) {
+                coins -= upgradeCosts.upgrade2;
+                coinsPerTap *= 3;
+                upgradeCosts.upgrade2 = Math.floor(upgradeCosts.upgrade2 * 2.5);
+                document.getElementById('cost2').textContent = upgradeCosts.upgrade2;
+                updateDisplay();
+                
+                if (tg.HapticFeedback) {
+                    tg.HapticFeedback.notificationOccurred('success');
+                }
+            }
+        });
+
+        // Upgrade 3: 5x tap power
+        document.getElementById('upgrade3').addEventListener('click', function() {
+            if (coins >= upgradeCosts.upgrade3) {
+                coins -= upgradeCosts.upgrade3;
+                coinsPerTap *= 5;
+                upgradeCosts.upgrade3 = Math.floor(upgradeCosts.upgrade3 * 2.5);
+                document.getElementById('cost3').textContent = upgradeCosts.upgrade3;
+                updateDisplay();
+                
+                if (tg.HapticFeedback) {
+                    tg.HapticFeedback.notificationOccurred('success');
+                }
+            }
+        });
+
+        // Initial display update
+        updateDisplay();
+    </script>
+</body>
+</html>
